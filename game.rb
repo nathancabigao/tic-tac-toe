@@ -22,9 +22,61 @@ class Board
 
     @board_grid[row][column] = marker
   end
+
+  # Checks every area if there is a winning combination
+  def check_winner
+    # Check rows
+    return true if check_rows
+
+    # Check columns
+    return true if check_columns
+
+    # Check diagonals
+    check_diagonals
+  end
+
+  # Checks the rows for winning lines
+  def check_rows
+    (TOP..BOTTOM).each do |row|
+      return true if check_line(@board_grid[row])
+    end
+    false
+  end
+
+  # Checks the columns for winning lines
+  def check_columns
+    (LEFT..RIGHT).each do |column|
+      line = [@board_grid[TOP][column], @board_grid[MIDDLE][column], @board_grid[BOTTOM][column]]
+      return true if check_line(line)
+    end
+    false
+  end
+
+  # Checks the diagonals for winning lines
+  def check_diagonals
+    # Check top left to bottom right
+    line = [@board_grid[TOP][LEFT], @board_grid[MIDDLE][MIDDLE], @board_grid[BOTTOM][RIGHT]]
+    return true if check_line(line)
+
+    # Check bottom left to top right
+    line = [@board_grid[BOTTOM][LEFT], @board_grid[MIDDLE][MIDDLE], @board_grid[TOP][RIGHT]]
+    check_line(line)
+  end
+
+  # Checks a certain line to see if it is a winning line.
+  def check_line(line)
+    # If anything is nil (empty), it cannot be a winning line.
+    return false unless line.none?(&:nil?)
+
+    # Check if all elements are the same and return the result.
+    line.uniq.length == 1
+  end
 end
 
 b = Board.new
 p b.p_grid
 b.place_marker('X', 1, 2)
+b.place_marker('X', 2, 2)
+b.place_marker('X', 0, 2)
 p b.p_grid
+p b.check_winner
