@@ -87,6 +87,13 @@ class Board
   end
 end
 
+# Used to create and play tic tac toe games
+class Game
+  def initialize
+    b = Board.new
+  end
+end
+
 b = Board.new
 p b.p_grid
 b.display_grid
