@@ -15,6 +15,20 @@ class Board
     @board_grid
   end
 
+  def display_grid
+    # row 1
+    (TOP..BOTTOM).each do |row|
+      (LEFT..RIGHT).each do |column|
+        # set marker to whitespace or the existing marker
+        marker = @board_grid[row][column].nil? ? ' ': @board_grid[row][column]
+        print " #{marker} "
+        print '|' unless column == RIGHT
+      end
+      puts "\n------------" unless row == BOTTOM
+      puts "\n" if row == BOTTOM
+    end
+  end
+
   def place_marker(marker, row, column)
     # if there is no marker at @board_grid[row][column], set the marker there
     return 'ERROR: Invalid row/column' unless row.between?(TOP, BOTTOM) && column.between?(LEFT, RIGHT)
@@ -75,8 +89,10 @@ end
 
 b = Board.new
 p b.p_grid
+b.display_grid
 b.place_marker('X', 1, 2)
 b.place_marker('X', 2, 2)
 b.place_marker('X', 0, 2)
 p b.p_grid
+b.display_grid
 p b.check_winner
