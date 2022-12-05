@@ -11,16 +11,11 @@ class Board
     @board_grid = Array.new(3) { Array.new(3) } # 3 rows of [nil, nil, nil]
   end
 
-  def p_grid
-    @board_grid
-  end
-
   def display_grid
-    # row 1
     (TOP..BOTTOM).each do |row|
       (LEFT..RIGHT).each do |column|
-        # set marker to whitespace or the existing marker
-        marker = @board_grid[row][column].nil? ? ' ': @board_grid[row][column]
+        # set marker to either whitespace or the existing marker.
+        marker = @board_grid[row][column].nil? ? ' ' : @board_grid[row][column]
         print " #{marker} "
         print '|' unless column == RIGHT
       end
@@ -52,6 +47,17 @@ class Board
   def space_empty?(row, col)
     @board_grid[row][col].nil?
   end
+
+  # Returns true if the board has no nil values (all spaces filled), indicating a tie.
+  def tie?
+    (TOP..BOTTOM).each do |row|
+      return false if @board_grid[row].any?(nil)
+    end
+    # No row has no nils, so it has to be a tie.
+    true
+  end
+
+  private
 
   # Checks the rows for winning lines
   def check_rows
@@ -89,15 +95,6 @@ class Board
     # Check if all elements are the same and return the result.
     line.uniq.length == 1
   end
-
-  # Returns true if the board has no nil values (all spaces filled), indicating a tie.
-  def tie?
-    (TOP..BOTTOM).each do |row|
-      return false if @board_grid[row].any?(nil)
-    end
-  end
-  # No row has no nils, so it has to be a tie.
-  true
 end
 
 # Used to create and play tic tac toe games
@@ -126,8 +123,7 @@ class Game
       # Player prompt+move+validate
       move
       # Player win? tie?
-      @game_end = @board.winner?
-      @game_tie = @board.tie?
+      check_win_or_tie
       # Toggle player_no and marker
       toggle_player unless @game_end || @game_tie
       # Loop end
@@ -135,6 +131,13 @@ class Game
 
     display_winner if @game_end
     display_tie if @game_tie
+  end
+
+  private
+
+  def check_win_or_tie
+    @game_end = @board.winner?
+    @game_tie = @board.tie? unless @game_end
   end
 
   def toggle_player
@@ -158,8 +161,10 @@ class Game
     until valid
       puts "Player #{@player_no} (#{@marker}), your move:"
       player_move = gets.chomp.downcase.split
+
       # Ensure valid input before moving on
       valid = validate_move(player_move)
+
       row_num = %w[top middle bottom].index(player_move[0]) if valid
       col_num = %w[left middle right].index(player_move[1]) if valid
       valid = @board.space_empty?(row_num, col_num) if valid
@@ -183,14 +188,11 @@ class Game
   end
 end
 
-# b = Board.new
-# p b.p_grid
-# b.display_grid
-# b.place_marker('X', 1, 2)
-# b.place_marker('X', 2, 2)
-# b.place_marker('X', 0, 2)
-# p b.p_grid
-# b.display_grid
-# p b.winner?
-game = Game.new
-game.play
+play = true
+while play
+  game = Game.new
+  game.play
+  puts 'If you want to play again, enter "y"!'
+  play = false unless gets.chomp.downcase == 'y'
+end
+puts 'Thanks for playing.'
