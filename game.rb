@@ -38,7 +38,7 @@ class Board
   end
 
   # Checks every area if there is a winning combination
-  def check_winner
+  def winner?
     # Check rows
     return true if check_rows
 
@@ -85,12 +85,22 @@ class Board
     # Check if all elements are the same and return the result.
     line.uniq.length == 1
   end
+
+  # Returns true if the board has no nil values (all spaces filled), indicating a tie.
+  def tie?
+    @board_grid.any?(nil) ? false : true
+  end
 end
 
 # Used to create and play tic tac toe games
 class Game
   def initialize
-    b = Board.new
+    @board = Board.new
+  end
+
+  # The core gameplay loop
+  def play
+    @board.display_grid
   end
 end
 
