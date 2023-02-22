@@ -9,8 +9,12 @@ BOTTOM = RIGHT = 2
 
 # Used to create 3x3 grid boards for the game.
 class Board
-  def initialize(board_grid = Array.new(3) { Array.new(3) })
+  def initialize(board_grid = create_new_board)
     @board_grid = board_grid # 3 rows of [nil, nil, nil]
+  end
+
+  def create_new_board
+    Array.new(3) { Array.new(3) }
   end
 
   def display_grid
@@ -55,8 +59,8 @@ class Board
     (TOP..BOTTOM).each do |row|
       return false if @board_grid[row].any?(nil)
     end
-    # No row has no nils, so it has to be a tie.
-    true
+    # No row has no nils, so it has to be a tie unless there is a winner.
+    !winner?
   end
 
   private
