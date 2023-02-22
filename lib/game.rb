@@ -38,8 +38,6 @@ class Game
     display_tie if @game_tie
   end
 
-  private
-
   def check_win_or_tie
     @game_end = @board.winner?
     @game_tie = @board.tie? unless @game_end
