@@ -56,4 +56,34 @@ describe Board do
       it { is_expected.to_not be_tie }
     end
   end
+
+  describe '#place_marker' do
+    context 'there is no marker at desired spot' do
+      subject(:board_place_empty) { described_class.new }
+      it 'returns the marker character' do
+        marker = 'x'
+        return_val = board_place_empty.place_marker(marker, TOP, LEFT)
+        expect(return_val).to eq(marker)
+      end
+    end
+    context 'there is already a marker at desired spot' do
+      grid_place_taken = [['o', nil, 'x'], ['o', 'x', nil], [nil, nil, nil]]
+      subject(:board_place_taken) { described_class.new(grid_place_taken) }
+      it 'returns a warning message to the user' do
+        marker = 'x'
+        warning_msg = 'You cannot place a marker here.'
+        return_val = board_place_taken.place_marker(marker, TOP, LEFT)
+        expect(return_val).to eq(warning_msg)
+      end
+    end
+    context 'an invalid row/col was given' do
+      subject(:board_place_invalid) { described_class.new }
+      it 'returns an error message' do
+        marker = 'x'
+        error_msg = 'ERROR: Invalid row/column'
+        return_val = board_place_invalid.place_marker(marker, 3, 5)
+        expect(return_val).to eq(error_msg)
+      end
+    end
+  end
 end
